@@ -7,7 +7,7 @@ from selenium import webdriver
 
 AHP = ['Average', 'Highest', 'Probability']
 HEADER = ['Bookies', 'Payout', 'Home', 'Draw', 'Away']
-url = 'https://www.betbrain.com/football/italy/serie-a/as-roma-v-genoa/#/home-draw-away/ordinary-time/'
+url = 'https://www.betbrain.com/football/italy/serie-b/frosinone-v-carpi-fc-1909/#/home-draw-away/ordinary-time/'
 
 browser = webdriver.PhantomJS()
 browser.get(url)
