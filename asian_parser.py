@@ -1,13 +1,17 @@
 import string
 import time
 import csv
-from itertools import zip_longest
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
-AHP = ['Average', 'Highest', 'Probability']
-HEADER = ['Bookies', 'Payout', 'Home', 'Draw', 'Away']
-url = 'https://www.betbrain.com/football/italy/serie-b/frosinone-v-carpi-fc-1909/#/asian-handicap/ordinary-time/'
+
+HEADER = ['Provider', 'Payout', 'Home', 'Away']
+
+
+def clear_string(text):
+    return ''.join(s for s in text if s in string.printable)
+
+url = 'https://www.betbrain.com/football/germany/bundesliga/tsv-eintracht-braunschweig-v-vfl-wolfsburg/#/over-under/ordinary-time/'
 
 browser = webdriver.PhantomJS()
 browser.get(url)
@@ -19,7 +23,30 @@ for link in links:
 soup = BeautifulSoup(browser.page_source, 'lxml')
 browser.close()
 
-with open('test.html', 'w') as output_file:
-    output_file.write(soup.prettify())
+result = []
+for box in soup.select('.OutcomeBox'):
+    result.append([box.select('.CollapsibleTitle')[0].text])
+    for row in box.find_all('ul', class_='OTRow'):
+        result.append([clear_string(r.text.strip()) for r in row.find_all('li', class_='OTCol', recursive=False)])
 
 
+def pretty_result():
+    for l in result:
+        if '%' in l[0]:
+            bookie, payout = l[0][:-3], l[0][-3:]
+            l[0] = bookie
+            l.insert(1, payout)
+        elif ')' in l[0]:
+            l.insert(0, None)
+            l.insert(0, 'Betdaq')
+        else:
+            l.insert(1, None)
+    return result
+
+result = pretty_result()
+
+with open('over_result.csv', 'w') as r:
+    writer = csv.writer(r)
+    writer.writerow(HEADER)
+    for row in result:
+        writer.writerow(row)
