@@ -16,7 +16,7 @@ $ pip install -r requirements.txt
 
 ### Install PhantomJS browser
 
-To install PhantomJS follow [this tutorial](https://gist.github.com/julionc/7476620)
+To install PhantomJS on Ubuntu follow [this tutorial](https://gist.github.com/julionc/7476620)
 
 ### Run application
 
